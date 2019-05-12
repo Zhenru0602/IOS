@@ -183,8 +183,8 @@ final class BookService{
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
         let managedObjectContext = appDelegate.persistentContainer.viewContext
         let bookmarkEntity = NSEntityDescription.entity(forEntityName: "Bookmarks", in: managedObjectContext)!
-        let user = NSManagedObject(entity: bookmarkEntity, insertInto: managedObjectContext)
-        user.setValue(id, forKey: "id")
+        let bookmark = NSManagedObject(entity: bookmarkEntity, insertInto: managedObjectContext)
+        bookmark.setValue(id, forKey: "id")
         
         do{
             try managedObjectContext.save()
@@ -209,6 +209,27 @@ final class BookService{
             return bookmarkIds
         } catch{
             return []
+        }
+    }
+    
+    func removeFromBookmark(id: String){
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let managedObjectContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Bookmarks")
+        fetchRequest.predicate = NSPredicate(format: "id = %@", id)
+        
+        do{
+            let test = try managedObjectContext.fetch(fetchRequest)
+            let objectToDelete = test[0] 
+            managedObjectContext.delete(objectToDelete)
+            do{
+                try managedObjectContext.save()
+            }  catch{
+                print("cannot save deleted object")
+                return
+            }
+        } catch{
+            print("failed to init deleted object")
         }
     }
 }

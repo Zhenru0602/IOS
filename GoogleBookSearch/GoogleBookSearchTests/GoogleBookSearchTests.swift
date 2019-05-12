@@ -20,15 +20,26 @@ class GoogleBookSearchTests: XCTestCase {
     }
 
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let VC = SearchViewController()
+        let books = VC.books
+        XCTAssertTrue(books.isEmpty)
     }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
+    
+    func testAsyncGetBookCall() {
+        let promise = expectation(description: "waiting for some books..")
+        var bookName = "Unknown"
+        bookService.getBooks(bookName: "ArtOfWar"){ (books) in
+            bookName = books[0].bookName
+            print(bookName)
+            promise.fulfill()
+        }
+        waitForExpectations(timeout: 3, handler: nil)
+        XCTAssertTrue("The Art of War"==bookName)
+    }
+    
+    func testGetJsonPerformance() {
         self.measure {
-            // Put the code you want to measure the time of here.
+            bookService.getJson(url: "https://www.googleapis.com/books/v1/volumes?q=ArtOfWar"){ (bookJson) in}
         }
     }
-
 }

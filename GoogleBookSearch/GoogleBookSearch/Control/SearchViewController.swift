@@ -89,5 +89,6 @@ extension SearchViewController: UISearchBarDelegate{
         } else{
             print("Empty String!")
         }
+        searchBar.endEditing(true)
     }
 }

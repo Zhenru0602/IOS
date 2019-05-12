@@ -38,6 +38,7 @@ class BookmarkViewController: UIViewController {
                     self.books.append(books[0])
                 }
             }
+            usleep(2000)
         }
     }
     
@@ -53,6 +54,17 @@ extension BookmarkViewController: UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookmarkTableViewCell", for: indexPath) as! BookmarkTableViewCell
         cell.cellConfig(bookname: books[indexPath.row].bookName, bookAuthor: books[indexPath.row].bookAuthor, bookPublisher: books[indexPath.row].bookPublisher, bookImageUrl: books[indexPath.row].bookImageUrl)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        switch editingStyle {
+            case .delete:
+                let id = books[indexPath.row].bookId
+                books.remove(at: indexPath.row)
+                bookService.removeFromBookmark(id: id)
+            default:
+                break
+        }
     }
     
     
