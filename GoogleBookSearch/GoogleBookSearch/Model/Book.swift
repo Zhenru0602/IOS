@@ -14,13 +14,15 @@ class Book{
     var bookAuthor: String
     var bookPublisher: String
     var bookDescription: String
+    var bookId: String
     var bookImageUrl: String
     
-    init(bookName: String, bookAuthor: String, bookPublisher: String, bookDescription: String, bookImageUrl: String) {
+    init(bookName: String, bookAuthor: String, bookPublisher: String, bookDescription: String, bookId: String, bookImageUrl: String) {
         self.bookName = bookName
         self.bookAuthor = bookAuthor
         self.bookPublisher = bookPublisher
         self.bookDescription = bookDescription
+        self.bookId = bookId
         self.bookImageUrl = bookImageUrl
     }
 }

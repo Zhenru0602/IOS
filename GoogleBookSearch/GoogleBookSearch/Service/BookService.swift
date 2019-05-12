@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 typealias BookHandler = ([Book]) -> Void
 typealias JsonHandler = ([[String:Any]]) -> Void
@@ -25,43 +26,52 @@ final class BookService{
         var books = [Book]()
         let url = "https://www.googleapis.com/books/v1/volumes?q=" + bookName
         self.getJson(url: url) { (bookJson) in
+            if bookJson.count == 0{
+                print("empty json")
+                completion([])
+                return
+            }
             var bookName = "Unknown"
             var bookAuthor = "Unknown"
             var bookPubliser = "Unknown"
             var bookDescription = "Unknown"
+            var bookId = "Unknown"
             var bookImageUrl = "Unknown"
             
             for i in bookJson{
-                if let infoDict = i["volumeInfo"] as? [String:Any] {
-                    if let name = infoDict["title"] as? String{
-                        bookName = name
-                    }
-                    
-                    if let authorArrray = infoDict["authors"] as? [String]{
-                        bookAuthor = ""
-                        for j in authorArrray{
-                            bookAuthor += j+"; "
+                if (i["id"] as? String) != nil{
+                    bookId = i["id"] as! String
+                    if let infoDict = i["volumeInfo"] as? [String:Any] {
+                        if let name = infoDict["title"] as? String{
+                            bookName = name
                         }
-                    }
-                    
-                    if let publisher = infoDict["publisher"] as? String{
-                        bookPubliser = publisher
-                    }
-                    
-                    if let description = infoDict["description"] as? String{
-                        bookDescription = description
-                    }
-                    
-                    if let imgDict = infoDict["imageLinks"] as?[String: String]{
-                        if let imgUrl = imgDict["thumbnail"]{
-                            bookImageUrl = imgUrl
-                            bookImageUrl.insert("s", at: bookImageUrl.index(bookImageUrl.startIndex, offsetBy: 4))
-                            print(bookImageUrl)
+                        
+                        if let authorArrray = infoDict["authors"] as? [String]{
+                            bookAuthor = ""
+                            for j in authorArrray{
+                                bookAuthor += j+"; "
+                            }
                         }
+                        
+                        if let publisher = infoDict["publisher"] as? String{
+                            bookPubliser = publisher
+                        }
+                        
+                        if let description = infoDict["description"] as? String{
+                            bookDescription = description
+                        }
+                        
+                        if let imgDict = infoDict["imageLinks"] as?[String: String]{
+                            if let imgUrl = imgDict["thumbnail"]{
+                                bookImageUrl = imgUrl
+                                bookImageUrl.insert("s", at: bookImageUrl.index(bookImageUrl.startIndex, offsetBy: 4))
+                                print(bookImageUrl)
+                            }
+                        }
+                        
                     }
-                    
                 }
-                let book = Book(bookName: bookName, bookAuthor: bookAuthor, bookPublisher: bookPubliser, bookDescription: bookDescription, bookImageUrl: bookImageUrl)
+                let book = Book(bookName: bookName, bookAuthor: bookAuthor, bookPublisher: bookPubliser, bookDescription: bookDescription, bookId: bookId,  bookImageUrl: bookImageUrl)
                 books.append(book)
             }
             completion(books)
@@ -102,14 +112,13 @@ final class BookService{
                 } catch {
                     completion([])
                     print("Couldn't Serialize Object: \(error.localizedDescription)")
+                    return
                 }
             }
             }.resume()
     }
     
     func downloadImage(url: String, completion: @escaping ImageHandler) {
-        
-        
         let image = UIImage(named: "book")!
         
         if let image = cache.object(forKey: url as NSString) {
@@ -149,5 +158,57 @@ final class BookService{
                 }
             }
         }.resume()
+    }
+    
+    func isInBookmark(id: String) -> Bool{
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return false}
+        let managedObjectContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Bookmarks")
+        fetchRequest.predicate = NSPredicate(format: "id = %@", id)
+        
+        var results: [NSManagedObject] = []
+        
+        do {
+            results = try managedObjectContext.fetch(fetchRequest)
+        }
+        catch {
+            print("error executing fetch request: \(error)")
+            return false
+        }
+        
+        return results.count > 0
+    }
+    
+    func addToBookmark(id: String){
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let managedObjectContext = appDelegate.persistentContainer.viewContext
+        let bookmarkEntity = NSEntityDescription.entity(forEntityName: "Bookmarks", in: managedObjectContext)!
+        let user = NSManagedObject(entity: bookmarkEntity, insertInto: managedObjectContext)
+        user.setValue(id, forKey: "id")
+        
+        do{
+            try managedObjectContext.save()
+        }catch{
+            return
+        }
+        
+    }
+    
+    func getBookmarkIds() -> [String]{
+        var bookmarkIds = [String]()
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return bookmarkIds}
+        let managedObjectContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Bookmarks")
+        
+        do{
+            let result = try managedObjectContext.fetch(fetchRequest)
+            for data in result as [NSManagedObject]{
+                let id = data.value(forKey: "id") as! String
+                bookmarkIds.append(id)
+            }
+            return bookmarkIds
+        } catch{
+            return []
+        }
     }
 }

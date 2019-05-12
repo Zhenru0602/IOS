@@ -18,6 +18,8 @@
 		8495FA682285C26C0069966F /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8495FA672285C26C0069966F /* Book.swift */; };
 		8495FA6A2285CEAC0069966F /* BookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8495FA692285CEAC0069966F /* BookService.swift */; };
 		8495FA6C22873AA90069966F /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8495FA6B22873AA90069966F /* DetailViewController.swift */; };
+		8495FA6E2287D69C0069966F /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8495FA6D2287D69C0069966F /* BookmarkViewController.swift */; };
+		84FD68B52287D9850001B8EA /* BookmarkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FD68B42287D9850001B8EA /* BookmarkTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,8 @@
 		8495FA672285C26C0069966F /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		8495FA692285CEAC0069966F /* BookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookService.swift; sourceTree = "<group>"; };
 		8495FA6B22873AA90069966F /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		8495FA6D2287D69C0069966F /* BookmarkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkViewController.swift; sourceTree = "<group>"; };
+		84FD68B42287D9850001B8EA /* BookmarkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				8495FA652285BF610069966F /* SearchTableViewCell.swift */,
+				84FD68B42287D9850001B8EA /* BookmarkTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -130,6 +135,7 @@
 			children = (
 				8495FA632285BDA90069966F /* SearchViewController.swift */,
 				8495FA6B22873AA90069966F /* DetailViewController.swift */,
+				8495FA6D2287D69C0069966F /* BookmarkViewController.swift */,
 			);
 			path = Control;
 			sourceTree = "<group>";
@@ -254,8 +260,10 @@
 			files = (
 				8495FA642285BDA90069966F /* SearchViewController.swift in Sources */,
 				8495FA662285BF610069966F /* SearchTableViewCell.swift in Sources */,
+				84FD68B52287D9850001B8EA /* BookmarkTableViewCell.swift in Sources */,
 				8495FA6A2285CEAC0069966F /* BookService.swift in Sources */,
 				8495FA422285BC590069966F /* GoogleBookSearch.xcdatamodeld in Sources */,
+				8495FA6E2287D69C0069966F /* BookmarkViewController.swift in Sources */,
 				8495FA682285C26C0069966F /* Book.swift in Sources */,
 				8495FA3A2285BC590069966F /* AppDelegate.swift in Sources */,
 				8495FA6C22873AA90069966F /* DetailViewController.swift in Sources */,
